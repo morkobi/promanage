@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ProManage</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ProManage">
+<meta name="theme-color" content="#0a0c10">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230a0c10'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='30' y='30' width='120' height='120' rx='28' fill='url(%23g)'/%3E%3Ctext x='90' y='112' font-size='72' text-anchor='middle'%3E%F0%9F%8E%AF%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22ProManage%22%2C%22short_name%22%3A%22ProManage%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0c10%22%2C%22theme_color%22%3A%22%230a0c10%22%2C%22orientation%22%3A%22portrait%22%7D">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c10;--surface:#12151c;--surface2:#1a1f2b;--surface3:#222838;--border:#2a3248;--accent:#3b82f6;--accent2:#6366f1;--green:#10b981;--red:#ef4444;--orange:#f59e0b;--purple:#a855f7;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Heebo',sans-serif;min-height:100vh;direction:rtl;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);}
+#splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s ease;}
+#splash.hide{opacity:0;pointer-events:none;}
+.splash-icon{width:96px;height:96px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:48px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1);}
+@keyframes splashPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.splash-title{font-size:28px;font-weight:900;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.splash-sub{font-size:13px;color:var(--text3);letter-spacing:2px;}
+.splash-dots{display:flex;gap:6px;margin-top:8px;}
+.splash-dot{width:7px;height:7px;border-radius:50%;background:var(--border);animation:dotPulse 1.2s ease-in-out infinite;}
+.splash-dot:nth-child(2){animation-delay:.2s;}
+.splash-dot:nth-child(3){animation-delay:.4s;}
+@keyframes dotPulse{0%,100%{background:var(--border)}50%{background:var(--accent)}}
+.header{background:linear-gradient(135deg,#0f1929 0%,#0a0c10 60%);border-bottom:1px solid var(--border);padding:0 1.2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:200;backdrop-filter:blur(10px);}
+.btn:active{transform:scale(.96);opacity:.85;}
+.chip:active{transform:scale(.95);}
+.project-card:active{transform:scale(.995);}
+input,textarea,select{font-size:16px!important;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-text h1{font-size:17px;font-weight:800;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;}
+.logo-text p{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.header-actions{display:flex;gap:8px;align-items:center;}
+.header-stats{display:flex;gap:16px;align-items:center;}
+.hstat{text-align:center;}
+.hstat-val{font-size:16px;font-weight:700;color:var(--accent);line-height:1;}
+.hstat-lbl{font-size:9px;color:var(--text3);letter-spacing:1px;margin-top:2px;}
+.main{max-width:1400px;margin:0 auto;padding:1.2rem;}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content;margin-bottom:1.5rem;}
+.tab{padding:8px 18px;border-radius:9px;border:none;background:transparent;color:var(--text2);font-family:'Heebo',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;}
+.tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;}
+.btn{padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-family:'Heebo',sans-serif;font-weight:700;font-size:14px;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+.btn-success{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.btn-purple{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.3);}
+.btn-orange{background:rgba(245,158,11,.15);color:var(--orange);border:1px solid rgba(245,158,11,.3);}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:7px;}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;}
+.search-box{flex:1;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Heebo',sans-serif;font-size:16px;outline:none;transition:border-color .2s;}
+.search-box:focus{border-color:var(--accent);}
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;overflow-x:auto;padding-bottom:4px;}
+.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.chip.active{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,.1);}
+.projects-grid{display:grid;gap:14px;}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.project-card.unpaid{border-color:rgba(239,68,68,.5);background:linear-gradient(135deg,#12151c 0%,#1a0f0f 100%);}
+.project-card.closed{opacity:.75;border-color:rgba(16,185,129,.3);background:linear-gradient(135deg,#12151c 0%,#0f1a15 100%);}
+.card-header{padding:12px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border);}
+.card-title-area{flex:1;}
+.card-name{font-size:16px;font-weight:700;margin-bottom:4px;}
+.card-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.meta-chip{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);}
+.type-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.type-cameras{background:rgba(99,102,241,.2);color:#a5b4fc;}
+.type-alarm{background:rgba(239,68,68,.2);color:#fca5a5;}
+.type-music{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.type-speakers{background:rgba(245,158,11,.2);color:#fcd34d;}
+.type-mixed{background:rgba(59,130,246,.2);color:#93c5fd;}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.status-open{background:rgba(59,130,246,.15);color:var(--accent);}
+.status-unpaid{background:rgba(239,68,68,.15);color:var(--red);}
+.status-partial{background:rgba(245,158,11,.15);color:var(--orange);}
+.status-closed{background:rgba(16,185,129,.15);color:var(--green);}
+.inner-tabs{display:flex;gap:0;padding:8px 14px 0;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;}
+.inner-tab{padding:7px 14px;border:none;background:transparent;color:var(--text2);font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;white-space:nowrap;}
+.inner-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.inner-tab-content{display:none;}
+.inner-tab-content.active{display:block;}
+.card-body{padding:14px;}
+.card-prices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.price-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 6px;text-align:center;}
+.price-box-val{font-size:13px;font-weight:700;margin-bottom:2px;}
+.price-box-lbl{font-size:9px;color:var(--text3);}
+.price-sub{font-size:9px;color:var(--text3);margin-top:2px;}
+.price-total{color:var(--text);}
+.price-paid{color:var(--green);}
+.price-remaining{color:var(--red);}
+.price-remaining.zero{color:var(--green);}
+.price-profit{color:var(--purple);}
+.price-profit.neg{color:var(--red);}
+.progress-bar-wrap{background:var(--surface2);border-radius:6px;height:6px;overflow:hidden;margin-bottom:10px;}
+.progress-bar{height:100%;border-radius:6px;transition:width .5s ease;}
+.description-text{font-size:13px;color:var(--text2);line-height:1.6;background:var(--surface2);border-radius:8px;padding:10px 12px;margin-bottom:10px;white-space:pre-wrap;}
+.section-head{font-size:11px;color:var(--text3);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;font-weight:600;}
+.payment-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;margin-bottom:5px;font-size:13px;flex-wrap:wrap;gap:6px;}
+.pay-method{display:flex;align-items:center;gap:6px;color:var(--text2);}
+.pay-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.pay-1{background:rgba(16,185,129,.2);}
+.pay-2{background:rgba(99,102,241,.2);}
+.pay-3{background:rgba(245,158,11,.2);}
+.pay-amount{font-weight:600;color:var(--green);}
+.checklist-item{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--surface2);border-radius:8px;margin-bottom:6px;}
+.checklist-item.done{opacity:.6;}
+.checklist-item.done .check-label{text-decoration:line-through;color:var(--text3);}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.check-box.checked{background:var(--green);border-color:var(--green);}
+.check-label{flex:1;font-size:13px;}
+.costs-table{width:100%;border-collapse:collapse;}
+.costs-table th{font-size:10px;color:var(--text3);text-align:right;padding:5px 8px;border-bottom:1px solid var(--border);text-transform:uppercase;}
+.costs-table td{padding:7px 8px;font-size:12px;border-bottom:1px solid rgba(42,50,72,.5);vertical-align:middle;}
+.costs-table tr:last-child td{border-bottom:none;}
+.cost-type-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;}
+.ct-equipment{background:rgba(99,102,241,.2);color:#a5b4fc;}
+.ct-labor{background:rgba(245,158,11,.2);color:#fcd34d;}
+.ct-transport{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.ct-other{background:rgba(148,163,184,.2);color:#94a3b8;}
+.card-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+.card-footer-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:100%;max-height:92vh;overflow-y:auto;animation:slideUpModal .3s ease;padding-bottom:env(safe-area-inset-bottom);}
+@media(min-width:600px){.modal-overlay{align-items:center;}.modal{border-radius:20px;max-width:660px;max-height:90vh;}}
+@keyframes slideUpModal{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--surface);z-index:1;}
+.modal-title{font-size:18px;font-weight:800;}
+.modal-body{padding:16px 18px;}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+.form-row{margin-bottom:14px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.form-row-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:14px;align-items:end;}
+label{display:block;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 13px;color:var(--text);font-family:'Heebo',sans-serif;font-size:16px;outline:none;transition:border-color .2s;direction:rtl;}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:80px;}
+select option{background:var(--surface2);}
+.close-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.vat-note{font-size:11px;color:var(--text3);margin-top:4px;}
+.vat-calc{font-size:13px;color:var(--accent);font-weight:600;margin-top:4px;}
+.section-label{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+.payment-method-select{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.pm-btn{padding:12px 8px;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--text2);font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;}
+.pm-btn.active{border-color:var(--accent);background:rgba(59,130,246,.1);color:var(--accent);}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:2rem;}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden;}
+.summary-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+.summary-card.blue::before{background:var(--accent);}
+.summary-card.green::before{background:var(--green);}
+.summary-card.red::before{background:var(--red);}
+.summary-card.orange::before{background:var(--orange);}
+.summary-card.purple::before{background:var(--purple);}
+.summary-icon{font-size:24px;margin-bottom:6px;}
+.summary-val{font-size:22px;font-weight:800;margin-bottom:4px;line-height:1;}
+.summary-lbl{font-size:11px;color:var(--text3);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
+.empty-state h3{font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px;}
+.empty-state p{font-size:13px;}
+.unpaid-banner{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.confirm-msg{font-size:14px;color:var(--text2);line-height:1.6;}
+.highlight-red{color:var(--red);font-weight:700;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+@media(max-width:400px){.card-prices{grid-template-columns:repeat(2,1fr);}.form-row-3{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-icon">🎯</div>
+  <div class="splash-title">ProManage</div>
+  <div class="splash-sub">מצלמות • אזעקות • מוזיקה</div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🎯</div>
+    <div class="logo-text">
+      <h1>ProManage</h1>
+      <p>מצלמות • אזעקות • מוזיקה</p>
+    </div>
+  </div>
+  <div class="header-stats" id="headerStats"></div>
+  <div class="header-actions">
+    <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ חדש</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('projects',this)">📋 פרויקטים</button>
+    <button class="tab" onclick="switchTab('summary',this)">📊 סיכום</button>
+  </div>
+  <div id="tab-projects">
+    <div class="toolbar">
+      <input class="search-box" type="text" placeholder="🔍 חיפוש..." oninput="renderProjects()" id="searchInput">
+    </div>
+    <div class="filter-chips">
+      <span class="chip active" data-filter="all" onclick="setFilter('all',this)">הכל</span>
+      <span class="chip" data-filter="unpaid" onclick="setFilter('unpaid',this)">🔴 חוב פתוח</span>
+      <span class="chip" data-filter="partial" onclick="setFilter('partial',this)">🟡 חלקי</span>
+      <span class="chip" data-filter="closed" onclick="setFilter('closed',this)">✅ סגורים</span>
+    </div>
+    <div id="unpaidBanner" class="unpaid-banner" style="display:none">⚠️ <span id="unpaidBannerText"></span></div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </div>
+  <div id="tab-summary" style="display:none">
+    <div class="summary-grid" id="summaryGrid"></div>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div id="projectModal" class="modal-overlay" style="display:none" onclick="closeOnOverlay(event,'projectModal')">
+  <div class="modal">
+    <div class="modal-header"><h2 class="modal-title" id="modalTitle">פרויקט חדש</h2><button class="close-btn" onclick="closeModal('projectModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row-2">
+        <div><label>שם לקוח *</label><input type="text" id="f_name" placeholder="שם הלקוח"></div>
+        <div><label>טלפון</label><input type="text" id="f_phone" placeholder="050-0000000"></div>
+      </div>
+      <div class="form-row"><label>כתובת</label><input type="text" id="f_address" placeholder="רחוב, עיר"></div>
+      <div class="form-row-2">
+        <div><label>סוג עבודה</label>
+          <select id="f_type">
+            <option value="cameras">📷 מצלמות</option><option value="alarm">🚨 אזעקה</option>
+            <option value="music">🎵 מוזיקה</option><option value="speakers">🔊 רמקולים</option><option value="mixed">🔧 שילוב</option>
+          </select></div>
+        <div><label>תאריך התחלה</label><input type="date" id="f_date"></div>
+      </div>
+      <div class="form-row">
+        <label>מחיר הצעה (לפני מע"מ) ₪</label>
+        <input type="number" id="f_price" placeholder="0" oninput="updateVatCalc()">
+        <div class="vat-note">לפני מע"מ 18%</div>
+        <div class="vat-calc" id="vatCalcDisplay"></div>
+      </div>
+      <div class="form-row"><label>תיאור / מה נעשה</label><textarea id="f_desc" placeholder="תיאור מפורט..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('projectModal')">ביטול</button>
+      <button class="btn btn-primary" onclick="saveProject()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div id="paymentModal" class="modal-overlay" style="display:none" onclick="closeOnOverlay(event,'paymentModal')">
+  <div class="modal">
+    <div class="modal-header"><h2 class="modal-title">הוספת תשלום</h2><button class="close-btn" onclick="closeModal('paymentModal')">✕</button></div>
+    <div class="modal-body">
+      <div id="paymentProjectInfo" style="margin-bottom:14px;padding:12px;background:var(--surface2);border-radius:10px;font-size:13px;color:var(--text2);"></div>
+      <div class="section-label">💳 אמצעי תשלום</div>
+      <div class="payment-method-select">
+        <button class="pm-btn active" data-method="1" onclick="selectMethod(this)">💵 אפשרות 1<br><small>מזומן/העברה</small></button>
+        <button class="pm-btn" data-method="2" onclick="selectMethod(this)">💳 אפשרות 2<br><small>צ'ק/אשראי</small></button>
+        <button class="pm-btn" data-method="3" onclick="selectMethod(this)">🏦 אפשרות 3<br><small>ביט/פייבוקס</small></button>
+      </div>
+      <div class="form-row">
+        <label>סכום (לפני מע"מ) ₪</label>
+        <input type="number" id="p_amount" placeholder="0" oninput="updatePaymentCalc()">
+        <div class="vat-calc" id="paymentVatCalc"></div>
+      </div>
+      <div class="form-row-2">
+        <div><label>תאריך</label><input type="date" id="p_date"></div>
+        <div><label>הערות</label><input type="text" id="p_note" placeholder="פרטים..."></div>
+      </div>
+      <div id="fullPaymentCheck"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('paymentModal')">ביטול</button>
+      <button class="btn btn-primary" onclick="savePayment()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- COST MODAL -->
+<div id="costModal" class="modal-overlay" style="display:none" onclick="closeOnOverlay(event,'costModal')">
+  <div class="modal">
+    <div class="modal-header"><h2 class="modal-title">💸 עלויות פרויקט</h2><button class="close-btn" onclick="closeModal('costModal')">✕</button></div>
+    <div class="modal-body">
+      <div id="costProjectInfo" style="margin-bottom:14px;padding:10px 12px;background:var(--surface2);border-radius:10px;font-size:13px;color:var(--text2);"></div>
+      <div id="costAddedList" style="display:none;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">✅ פריטים שנוספו</div>
+        <div id="costAddedItems"></div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">+ פריט חדש</div>
+        <div class="form-row-2">
+          <div><label>סוג</label>
+            <select id="c_type">
+              <option value="equipment">🔧 ציוד</option>
+              <option value="labor">👷 עבודה</option>
+              <option value="transport">🚗 נסיעות</option>
+              <option value="other">📦 אחר</option>
+            </select></div>
+          <div><label>תאריך</label><input type="date" id="c_date"></div>
+        </div>
+        <div class="form-row"><label>שם פריט *</label><input type="text" id="c_name" placeholder="מצלמה IP 4K, כבל 50מ..."></div>
+        <div class="form-row-3">
+          <div><label>מחיר/יח' ₪</label><input type="number" id="c_unit" placeholder="0" oninput="updateCostCalc()"></div>
+          <div><label>כמות</label><input type="number" id="c_qty" placeholder="1" value="1" min="1" oninput="updateCostCalc()"></div>
+          <div><label>סה"כ</label><input type="text" id="c_total_display" placeholder="—" readonly style="background:var(--surface3);color:var(--green);font-weight:700;"></div>
+        </div>
+        <div class="form-row" style="margin-bottom:0"><label>הערות</label><input type="text" id="c_note" placeholder="ספק, חשבונית..."></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="addCostAndContinue()" style="flex:1;justify-content:center;padding:14px;">
+          ＋ הוסף פריט והמשך
+        </button>
+        <div id="costRunningTotal" style="font-size:13px;color:var(--text2);white-space:nowrap;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('costModal')">סגור</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLIST MODAL -->
+<div id="checklistModal" class="modal-overlay" style="display:none" onclick="closeOnOverlay(event,'checklistModal')">
+  <div class="modal">
+    <div class="modal-header"><h2 class="modal-title">📋 אבזרים להשלמה</h2><button class="close-btn" onclick="closeModal('checklistModal')">✕</button></div>
+    <div class="modal-body">
+      <div id="checklistProjectInfo" style="margin-bottom:14px;padding:10px 12px;background:var(--surface2);border-radius:10px;font-size:13px;color:var(--text2);"></div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <input type="text" id="cl_new" placeholder="הוסף פריט..." style="flex:1;" onkeydown="if(event.key==='Enter')addChecklistItem()">
+        <button class="btn btn-primary btn-sm" onclick="addChecklistItem()" style="padding:12px 16px;">+ הוסף</button>
+      </div>
+      <div id="checklistItems"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary" onclick="closeModal('checklistModal')">סגור</button></div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirmModal" class="modal-overlay" style="display:none" onclick="closeOnOverlay(event,'confirmModal')">
+  <div class="modal">
+    <div class="modal-header"><h2 class="modal-title" id="confirmTitle">אישור</h2><button class="close-btn" onclick="closeModal('confirmModal')">✕</button></div>
+    <div class="modal-body"><p class="confirm-msg" id="confirmMsg"></p></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('confirmModal')">ביטול</button>
+      <button class="btn" id="confirmOkBtn">אישור</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const VAT=0.18;
+const METHODS={'1':{label:'מזומן/העברה',icon:'💵',cls:'pay-1'},'2':{label:"צ'ק/אשראי",icon:'💳',cls:'pay-2'},'3':{label:'ביט/פייבוקס',icon:'🏦',cls:'pay-3'}};
+const TYPE_MAP={cameras:{label:'מצלמות',icon:'📷',cls:'type-cameras'},alarm:{label:'אזעקה',icon:'🚨',cls:'type-alarm'},music:{label:'מוזיקה',icon:'🎵',cls:'type-music'},speakers:{label:'רמקולים',icon:'🔊',cls:'type-speakers'},mixed:{label:'שילוב',icon:'🔧',cls:'type-mixed'}};
+const COST_TYPES={equipment:{label:'ציוד',icon:'🔧',cls:'ct-equipment'},labor:{label:'עבודה',icon:'👷',cls:'ct-labor'},transport:{label:'נסיעות',icon:'🚗',cls:'ct-transport'},other:{label:'אחר',icon:'📦',cls:'ct-other'}};
+let projects=JSON.parse(localStorage.getItem('pm_projects_v2')||'[]');
+let editingId=null,payingProjectId=null,costProjectId=null,checklistProjectId=null,selectedMethod='1',currentFilter='all',openCardTab={};
+function save(){localStorage.setItem('pm_projects_v2',JSON.stringify(projects));}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function fmt(n){return '₪'+(+n||0).toLocaleString('he-IL',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function fmtD(d){if(!d)return '—';const[y,m,day]=d.split('-');return `${day}/${m}/${y}`;}
+function totalPaid(p){return (p.payments||[]).reduce((a,x)=>a+(+x.amount||0),0);}
+function totalPaidWithVat(p){return (p.payments||[]).reduce((a,x)=>a+(+x.amountWithVat||0),0);}
+function totalCosts(p){return (p.costs||[]).reduce((a,x)=>a+((+x.unit||0)*(+x.qty||1)),0);}
+function projectStatus(p){if(p.closed)return 'closed';const paid=totalPaid(p);if(paid<=0)return 'unpaid';if(paid<(+p.price))return 'partial';return 'paid';}
+function switchTab(tab,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('tab-projects').style.display=tab==='projects'?'':'none';document.getElementById('tab-summary').style.display=tab==='summary'?'':'none';if(tab==='summary')renderSummary();}
+function setFilter(f,el){currentFilter=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderProjects();}
+function switchInnerTab(pid,tab){openCardTab[pid]=tab;['overview','costs','checklist'].forEach(t=>{const el=document.getElementById('it-'+t+'-'+pid);const btn=document.getElementById('itb-'+t+'-'+pid);if(el)el.classList.toggle('active',t===tab);if(btn)btn.classList.toggle('active',t===tab);});}
+function openAddModal(){editingId=null;document.getElementById('modalTitle').textContent='פרויקט חדש';['f_name','f_phone','f_address','f_price','f_desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('f_type').value='cameras';document.getElementById('f_date').value=new Date().toISOString().slice(0,10);document.getElementById('vatCalcDisplay').textContent='';document.getElementById('projectModal').style.display='flex';}
+function openEditModal(id){const p=projects.find(x=>x.id===id);if(!p)return;editingId=id;document.getElementById('modalTitle').textContent='עריכת פרויקט';document.getElementById('f_name').value=p.name;document.getElementById('f_phone').value=p.phone||'';document.getElementById('f_address').value=p.address||'';document.getElementById('f_type').value=p.type;document.getElementById('f_date').value=p.date;document.getElementById('f_price').value=p.price;document.getElementById('f_desc').value=p.desc||'';updateVatCalc();document.getElementById('projectModal').style.display='flex';}
+function saveProject(){const name=document.getElementById('f_name').value.trim();const price=parseFloat(document.getElementById('f_price').value)||0;if(!name){alert('נא להזין שם לקוח');return;}if(price<=0){alert('נא להזין מחיר');return;}const proj={id:editingId||uid(),name,phone:document.getElementById('f_phone').value.trim(),address:document.getElementById('f_address').value.trim(),type:document.getElementById('f_type').value,date:document.getElementById('f_date').value,price,priceWithVat:price*(1+VAT),desc:document.getElementById('f_desc').value.trim(),payments:[],costs:[],checklist:[],closed:false,createdAt:Date.now()};if(editingId){const idx=projects.findIndex(x=>x.id===editingId);proj.payments=projects[idx].payments||[];proj.costs=projects[idx].costs||[];proj.checklist=projects[idx].checklist||[];proj.closed=projects[idx].closed;proj.createdAt=projects[idx].createdAt;projects[idx]=proj;}else{projects.unshift(proj);}save();closeModal('projectModal');renderProjects();renderHeaderStats();}
+function openPaymentModal(id){payingProjectId=id;const p=projects.find(x=>x.id===id);const paid=totalPaid(p),remaining=(+p.price)-paid;document.getElementById('paymentProjectInfo').innerHTML=`<strong>${p.name}</strong> | הצעה: <strong>${fmt(p.price)}</strong> (+מע"מ: ${fmt(p.priceWithVat)})<br>שולם: <span style="color:var(--green)">${fmt(paid)}</span> | נותר: <span style="color:var(--red)">${fmt(remaining)}</span>`;document.getElementById('p_amount').value='';document.getElementById('p_date').value=new Date().toISOString().slice(0,10);document.getElementById('p_note').value='';document.getElementById('paymentVatCalc').textContent='';document.getElementById('fullPaymentCheck').innerHTML=remaining>0?`<button class="btn btn-success btn-sm" onclick="fillFullPayment()" style="margin-top:8px;width:100%;justify-content:center;">💰 תשלום מלא — יתרה ${fmt(remaining)}</button>`:'';selectedMethod='1';document.querySelectorAll('.pm-btn').forEach(b=>b.classList.toggle('active',b.dataset.method==='1'));document.getElementById('paymentModal').style.display='flex';}
+function fillFullPayment(){const p=projects.find(x=>x.id===payingProjectId);document.getElementById('p_amount').value=((+p.price)-totalPaid(p)).toFixed(2);updatePaymentCalc();}
+function savePayment(){const amount=parseFloat(document.getElementById('p_amount').value)||0;if(amount<=0){alert('נא להזין סכום');return;}const p=projects.find(x=>x.id===payingProjectId);p.payments.push({id:uid(),amount,amountWithVat:amount*(1+VAT),method:selectedMethod,date:document.getElementById('p_date').value,note:document.getElementById('p_note').value.trim()});if(totalPaid(p)>=(+p.price))p.closed=true;save();closeModal('paymentModal');renderProjects();renderHeaderStats();}
+function selectMethod(el){selectedMethod=el.dataset.method;document.querySelectorAll('.pm-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function removePayment(pid,payid){const p=projects.find(x=>x.id===pid);p.payments=p.payments.filter(x=>x.id!==payid);if(p.closed&&totalPaid(p)<+p.price)p.closed=false;save();renderProjects();renderHeaderStats();}
+function openCostModal(id){costProjectId=id;refreshCostInfo();document.getElementById('c_type').value='equipment';document.getElementById('c_date').value=new Date().toISOString().slice(0,10);clearCostForm();refreshCostAddedList();document.getElementById('costModal').style.display='flex';setTimeout(()=>document.getElementById('c_name').focus(),300);}
+function refreshCostInfo(){const p=projects.find(x=>x.id===costProjectId);if(!p)return;document.getElementById('costProjectInfo').innerHTML=`<strong>${p.name}</strong> | הצעה: ${fmt(p.price)} | עלויות: <span style="color:var(--red)">${fmt(totalCosts(p))}</span> | רווח: <span style="color:${totalCosts(p)>(+p.price)?'var(--red)':'var(--purple)'}">${fmt((+p.price)-totalCosts(p))}</span>`;}
+function clearCostForm(){document.getElementById('c_name').value='';document.getElementById('c_unit').value='';document.getElementById('c_qty').value='1';document.getElementById('c_total_display').value='';document.getElementById('c_note').value='';document.getElementById('costRunningTotal').textContent='';}
+function refreshCostAddedList(){const p=projects.find(x=>x.id===costProjectId);if(!p||!p.costs||p.costs.length===0){document.getElementById('costAddedList').style.display='none';return;}document.getElementById('costAddedList').style.display='block';document.getElementById('costAddedItems').innerHTML=p.costs.slice().reverse().slice(0,8).map(c=>{const ct=COST_TYPES[c.type]||COST_TYPES.other;return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface3);border-radius:8px;margin-bottom:5px;font-size:13px;gap:8px;"><span class="cost-type-badge ${ct.cls}" style="flex-shrink:0">${ct.icon}</span><span style="flex:1;font-weight:600">${c.name}</span><span style="color:var(--text3);font-size:12px">${c.qty}×${fmt(c.unit)}</span><span style="color:var(--red);font-weight:700;white-space:nowrap">${fmt(c.total)}</span><button class="btn btn-danger btn-sm" onclick="removeCostInModal('${p.id}','${c.id}')" style="padding:4px 8px">✕</button></div>`;}).join('');}
+function updateCostCalc(){const u=parseFloat(document.getElementById('c_unit').value)||0,q=parseFloat(document.getElementById('c_qty').value)||1;document.getElementById('c_total_display').value=u>0?fmt(u*q):'';const p=projects.find(x=>x.id===costProjectId);if(u>0&&p){const newTotal=totalCosts(p)+(u*q);document.getElementById('costRunningTotal').textContent=`סה"כ: ${fmt(newTotal)}`;}}
+function addCostAndContinue(){const name=document.getElementById('c_name').value.trim(),unit=parseFloat(document.getElementById('c_unit').value)||0,qty=parseFloat(document.getElementById('c_qty').value)||1;if(!name){alert('נא להזין שם פריט');document.getElementById('c_name').focus();return;}if(unit<=0){alert('נא להזין מחיר');document.getElementById('c_unit').focus();return;}const p=projects.find(x=>x.id===costProjectId);if(!p.costs)p.costs=[];p.costs.push({id:uid(),type:document.getElementById('c_type').value,name,unit,qty,total:unit*qty,date:document.getElementById('c_date').value,note:document.getElementById('c_note').value.trim()});save();renderProjects();refreshCostInfo();refreshCostAddedList();clearCostForm();document.getElementById('c_name').focus();}
+function removeCostInModal(pid,cid){const p=projects.find(x=>x.id===pid);p.costs=(p.costs||[]).filter(x=>x.id!==cid);save();renderProjects();refreshCostInfo();refreshCostAddedList();}
+function removeCost(pid,cid){const p=projects.find(x=>x.id===pid);p.costs=(p.costs||[]).filter(x=>x.id!==cid);save();renderProjects();}
+function openChecklistModal(id){checklistProjectId=id;const p=projects.find(x=>x.id===id);document.getElementById('checklistProjectInfo').innerHTML=`<strong>${p.name}</strong>`;document.getElementById('cl_new').value='';renderChecklistItems(p);document.getElementById('checklistModal').style.display='flex';}
+function renderChecklistItems(p){const list=p.checklist||[];if(list.length===0){document.getElementById('checklistItems').innerHTML=`<div class="empty-state" style="padding:20px"><p>אין פריטים — הוסף למעלה</p></div>`;return;}document.getElementById('checklistItems').innerHTML=list.map(item=>`<div class="checklist-item ${item.done?'done':''}"><div class="check-box ${item.done?'checked':''}" onclick="toggleCheck('${p.id}','${item.id}')">${item.done?'<svg width="12" height="12" fill="none" stroke="#fff" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>':''}</div><span class="check-label">${item.label}</span><button class="btn btn-danger btn-sm" onclick="removeChecklistItem('${p.id}','${item.id}')">✕</button></div>`).join('');}
+function addChecklistItem(){const label=document.getElementById('cl_new').value.trim();if(!label)return;const p=projects.find(x=>x.id===checklistProjectId);if(!p.checklist)p.checklist=[];p.checklist.push({id:uid(),label,done:false});document.getElementById('cl_new').value='';save();renderChecklistItems(p);renderProjects();}
+function toggleCheck(pid,cid){const p=projects.find(x=>x.id===pid),item=(p.checklist||[]).find(x=>x.id===cid);if(item){item.done=!item.done;save();renderChecklistItems(p);renderProjects();}}
+function removeChecklistItem(pid,cid){const p=projects.find(x=>x.id===pid);p.checklist=(p.checklist||[]).filter(x=>x.id!==cid);save();renderChecklistItems(p);renderProjects();}
+function confirmClose(id){const p=projects.find(x=>x.id===id);document.getElementById('confirmTitle').textContent='סגירת פרויקט';document.getElementById('confirmMsg').innerHTML=`סגור פרויקט של <strong>${p.name}</strong>?<br><span class="highlight-red">תשלום לא הושלם! יתרה: ${fmt((+p.price)-totalPaid(p))}</span>`;document.getElementById('confirmOkBtn').className='btn btn-danger';document.getElementById('confirmOkBtn').textContent='סגור בכל זאת';document.getElementById('confirmOkBtn').onclick=()=>{closeProject(id);closeModal('confirmModal');};document.getElementById('confirmModal').style.display='flex';}
+function closeProject(id){const p=projects.find(x=>x.id===id);p.closed=true;save();renderProjects();renderHeaderStats();}
+function reopenProject(id){const p=projects.find(x=>x.id===id);p.closed=false;save();renderProjects();renderHeaderStats();}
+function confirmDelete(id){const p=projects.find(x=>x.id===id);document.getElementById('confirmTitle').textContent='מחיקת פרויקט';document.getElementById('confirmMsg').innerHTML=`האם למחוק את פרויקט <strong>${p.name}</strong>?`;document.getElementById('confirmOkBtn').className='btn btn-danger';document.getElementById('confirmOkBtn').textContent='מחק';document.getElementById('confirmOkBtn').onclick=()=>{projects=projects.filter(x=>x.id!==id);save();closeModal('confirmModal');renderProjects();renderHeaderStats();};document.getElementById('confirmModal').style.display='flex';}
+function updateVatCalc(){const v=parseFloat(document.getElementById('f_price').value)||0;document.getElementById('vatCalcDisplay').textContent=v>0?`כולל מע"מ: ${fmt(v*(1+VAT))}`:''}
+function updatePaymentCalc(){const v=parseFloat(document.getElementById('p_amount').value)||0;document.getElementById('paymentVatCalc').textContent=v>0?`כולל מע"מ: ${fmt(v*(1+VAT))}`:''}
+function closeModal(id){document.getElementById(id).style.display='none';}
+function closeOnOverlay(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function renderProjects(){
+  const search=(document.getElementById('searchInput').value||'').toLowerCase();
+  let list=projects;
+  if(search)list=list.filter(p=>p.name.toLowerCase().includes(search)||(p.address||'').toLowerCase().includes(search)||(p.phone||'').includes(search));
+  if(currentFilter==='unpaid')list=list.filter(p=>!p.closed&&totalPaid(p)<=0);
+  else if(currentFilter==='partial')list=list.filter(p=>!p.closed&&totalPaid(p)>0&&totalPaid(p)<+p.price);
+  else if(currentFilter==='closed')list=list.filter(p=>p.closed);
+  const unpaid=projects.filter(p=>!p.closed&&totalPaid(p)<+p.price);
+  const banner=document.getElementById('unpaidBanner');
+  if(unpaid.length>0){banner.style.display='flex';const debt=unpaid.reduce((a,p)=>a+((+p.price)-totalPaid(p)),0);document.getElementById('unpaidBannerText').textContent=`${unpaid.length} פרויקטים עם חוב | ${fmt(debt)} | +מע"מ: ${fmt(debt*(1+VAT))}`;}
+  else{banner.style.display='none';}
+  const grid=document.getElementById('projectsGrid');
+  if(list.length===0){grid.innerHTML=`<div class="empty-state"><h3>אין פרויקטים</h3><p>לחץ "+ חדש" להוסיף</p></div>`;return;}
+  grid.innerHTML=list.map(p=>renderCard(p)).join('');
+}
+function renderCard(p){
+  const paid=totalPaid(p),paidVat=totalPaidWithVat(p),price=+p.price,priceVat=price*(1+VAT),remaining=price-paid,remainingVat=remaining*(1+VAT);
+  const costs=totalCosts(p),profit=price-costs,profitPct=price>0?((profit/price)*100):0;
+  const pct=price>0?Math.min(100,(paid/price)*100):0,status=projectStatus(p),t=TYPE_MAP[p.type]||TYPE_MAP.mixed;
+  const barColor=p.closed?'var(--green)':pct<50?'var(--red)':pct<100?'var(--orange)':'var(--green)';
+  const cardClass=p.closed?'closed':(status==='unpaid'||status==='partial'?'unpaid':'');
+  const activeTab=openCardTab[p.id]||'overview';
+  const cl=p.checklist||[],clDone=cl.filter(x=>x.done).length,pc=p.costs||[];
+  const statusLabels={unpaid:'<span class="status-badge status-unpaid">🔴 לא שולם</span>',partial:'<span class="status-badge status-partial">🟡 חלקי</span>',paid:'<span class="status-badge status-open">💰 שולם</span>',closed:'<span class="status-badge status-closed">✅ סגור</span>'};
+  const paymentsHtml=(p.payments||[]).length>0?`<div style="margin-top:10px"><div class="section-head">💸 תשלומים</div>${(p.payments||[]).map(pay=>{const m=METHODS[pay.method]||METHODS['1'];return`<div class="payment-row"><div class="pay-method"><div class="pay-icon ${m.cls}">${m.icon}</div><span>${m.label}</span>${pay.date?`<span style="color:var(--text3);font-size:11px">${fmtD(pay.date)}</span>`:''} ${pay.note?`<span style="color:var(--text3);font-size:11px">— ${pay.note}</span>`:''}</div><div style="display:flex;align-items:center;gap:6px"><span class="pay-amount">${fmt(pay.amount)}</span><button class="btn btn-danger btn-sm" onclick="removePayment('${p.id}','${pay.id}')" style="padding:4px 8px">✕</button></div></div>`;}).join('')}</div>`:'';
+  const overviewHtml=`<div class="card-prices"><div class="price-box"><div class="price-box-val price-total">${fmt(price)}</div><div class="price-box-lbl">הצעה</div><div class="price-sub">+מע"מ: ${fmt(priceVat)}</div></div><div class="price-box"><div class="price-box-val price-paid">${fmt(paid)}</div><div class="price-box-lbl">שולם</div><div class="price-sub">+מע"מ: ${fmt(paidVat)}</div></div><div class="price-box"><div class="price-box-val price-remaining ${remaining<=0?'zero':''}">${fmt(remaining)}</div><div class="price-box-lbl">נותר</div><div class="price-sub">+מע"מ: ${fmt(remainingVat)}</div></div><div class="price-box"><div class="price-box-val price-profit ${profit<0?'neg':''}">${fmt(profit)}</div><div class="price-box-lbl">רווח</div><div class="price-sub">${profitPct.toFixed(0)}%</div></div></div><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%;background:${barColor};"></div></div>${p.desc?`<div class="description-text">${p.desc}</div>`:''}${paymentsHtml}`;
+  const costsHtml=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div style="font-size:12px;color:var(--text2)">עלויות: <strong style="color:var(--red)">${fmt(costs)}</strong> | רווח: <strong style="${profit<0?'color:var(--red)':'color:var(--purple)'}">${fmt(profit)}</strong> (${profitPct.toFixed(0)}%)</div><button class="btn btn-orange btn-sm" onclick="openCostModal('${p.id}')">+ הוסף</button></div>${pc.length===0?`<div class="empty-state" style="padding:16px"><p>אין עלויות</p></div>`:`<div style="overflow-x:auto"><table class="costs-table"><thead><tr><th>פריט</th><th>סוג</th><th>יח'</th><th>כמות</th><th>סה"כ</th><th></th></tr></thead><tbody>${pc.map(c=>{const ct=COST_TYPES[c.type]||COST_TYPES.other;return`<tr><td><div style="font-weight:600">${c.name}</div>${c.note?`<div style="font-size:11px;color:var(--text3)">${c.note}</div>`:''}</td><td><span class="cost-type-badge ${ct.cls}">${ct.icon}</span></td><td>${fmt(c.unit)}</td><td style="text-align:center">${c.qty}</td><td style="color:var(--red);font-weight:700">${fmt(c.total)}</td><td><button class="btn btn-danger btn-sm" onclick="removeCost('${p.id}','${c.id}')" style="padding:4px 8px">✕</button></td></tr>`;}).join('')}</tbody></table></div>`}`;
+  const checkHtml=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div style="font-size:12px;color:var(--text2)">${cl.length>0?`${clDone}/${cl.length} הושלמו`:'ריק'}</div><button class="btn btn-purple btn-sm" onclick="openChecklistModal('${p.id}')">+ ערוך</button></div>${cl.length===0?`<div class="empty-state" style="padding:16px"><p>אין אבזרים</p></div>`:`<div>${cl.map(item=>`<div class="checklist-item ${item.done?'done':''}"><div class="check-box ${item.done?'checked':''}" onclick="toggleCheck('${p.id}','${item.id}')">${item.done?'<svg width="12" height="12" fill="none" stroke="#fff" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>':''}</div><span class="check-label">${item.label}</span></div>`).join('')}</div>`}`;
+  return`<div class="project-card ${cardClass}" id="card-${p.id}"><div class="card-header"><div class="card-title-area"><div class="card-name">${p.name}</div><div class="card-meta"><span class="type-badge ${t.cls}">${t.icon} ${t.label}</span>${statusLabels[status]}${p.date?`<span class="meta-chip">📅 ${fmtD(p.date)}</span>`:''}${p.address?`<span class="meta-chip">📍 ${p.address}</span>`:''}${p.phone?`<span class="meta-chip">📞 ${p.phone}</span>`:''}${cl.length>0?`<span class="meta-chip" style="color:${clDone===cl.length?'var(--green)':'var(--orange)'}">📋 ${clDone}/${cl.length}</span>`:''}</div></div></div><div class="inner-tabs"><button class="inner-tab ${activeTab==='overview'?'active':''}" id="itb-overview-${p.id}" onclick="switchInnerTab('${p.id}','overview')">📊 סקירה</button><button class="inner-tab ${activeTab==='costs'?'active':''}" id="itb-costs-${p.id}" onclick="switchInnerTab('${p.id}','costs')">💸 עלויות${pc.length>0?' ('+pc.length+')':''}</button><button class="inner-tab ${activeTab==='checklist'?'active':''}" id="itb-checklist-${p.id}" onclick="switchInnerTab('${p.id}','checklist')">📋 אבזרים${cl.length>0?' ('+clDone+'/'+cl.length+')':''}</button></div><div class="card-body"><div class="inner-tab-content ${activeTab==='overview'?'active':''}" id="it-overview-${p.id}">${overviewHtml}</div><div class="inner-tab-content ${activeTab==='costs'?'active':''}" id="it-costs-${p.id}">${costsHtml}</div><div class="inner-tab-content ${activeTab==='checklist'?'active':''}" id="it-checklist-${p.id}">${checkHtml}</div></div><div class="card-footer"><div style="font-size:11px;color:var(--text3)">${Math.round(pct)}% שולם</div><div class="card-footer-actions">${!p.closed?`<button class="btn btn-success btn-sm" onclick="openPaymentModal('${p.id}')">💰 תשלום</button>`:''}<button class="btn btn-outline btn-sm" onclick="openEditModal('${p.id}')">✏️</button>${!p.closed?`<button class="btn btn-outline btn-sm" onclick="${remaining<=0?`closeProject('${p.id}')`:` confirmClose('${p.id}')`}">🔒</button>`:`<button class="btn btn-outline btn-sm" onclick="reopenProject('${p.id}')">🔓</button>`}<button class="btn btn-danger btn-sm" onclick="confirmDelete('${p.id}')">🗑️</button></div></div></div>`;
+}
+function renderSummary(){
+  const total=projects.length,closed=projects.filter(p=>p.closed).length,open=projects.filter(p=>!p.closed).length;
+  const unpaid=projects.filter(p=>!p.closed&&totalPaid(p)<+p.price).length;
+  const totalRevenue=projects.reduce((a,p)=>a+(+p.price),0);
+  const totalCollected=projects.reduce((a,p)=>a+totalPaid(p),0);
+  const totalDebt=projects.filter(p=>!p.closed).reduce((a,p)=>a+((+p.price)-totalPaid(p)),0);
+  const totalCostsAll=projects.reduce((a,p)=>a+totalCosts(p),0);
+  const totalProfit=totalRevenue-totalCostsAll;
+  document.getElementById('summaryGrid').innerHTML=`
+    <div class="summary-card blue"><div class="summary-icon">📋</div><div class="summary-val">${total}</div><div class="summary-lbl">סה"כ פרויקטים</div></div>
+    <div class="summary-card green"><div class="summary-icon">✅</div><div class="summary-val">${closed}</div><div class="summary-lbl">סגורים</div></div>
+    <div class="summary-card orange"><div class="summary-icon">🔧</div><div class="summary-val">${open}</div><div class="summary-lbl">פתוחים</div></div>
+    <div class="summary-card red"><div class="summary-icon">⚠️</div><div class="summary-val">${unpaid}</div><div class="summary-lbl">חוב פתוח</div></div>
+    <div class="summary-card blue"><div class="summary-icon">💼</div><div class="summary-val" style="font-size:18px">${fmt(totalRevenue)}</div><div class="summary-lbl">הצעות (לפני מע"מ)</div></div>
+    <div class="summary-card green"><div class="summary-icon">💰</div><div class="summary-val" style="font-size:18px">${fmt(totalCollected)}</div><div class="summary-lbl">סה"כ גבייה</div></div>
+    <div class="summary-card red"><div class="summary-icon">📉</div><div class="summary-val" style="font-size:18px">${fmt(totalDebt)}</div><div class="summary-lbl">חוב פתוח</div></div>
+    <div class="summary-card red"><div class="summary-icon">🏗️</div><div class="summary-val" style="font-size:18px">${fmt(totalCostsAll)}</div><div class="summary-lbl">סה"כ עלויות</div></div>
+    <div class="summary-card purple"><div class="summary-icon">📈</div><div class="summary-val" style="font-size:18px;color:${totalProfit>=0?'var(--purple)':'var(--red)'}">${fmt(totalProfit)}</div><div class="summary-lbl">רווח גולמי כולל</div></div>
+    <div class="summary-card blue"><div class="summary-icon">🧾</div><div class="summary-val" style="font-size:18px">${fmt(totalRevenue*(1+VAT))}</div><div class="summary-lbl">הצעות כולל מע"מ</div></div>
+  `;
+}
+function renderHeaderStats(){
+  const open=projects.filter(p=>!p.closed).length;
+  const debt=projects.filter(p=>!p.closed&&totalPaid(p)<+p.price).reduce((a,p)=>a+((+p.price)-totalPaid(p)),0);
+  document.getElementById('headerStats').innerHTML=`<div class="hstat"><div class="hstat-val">${open}</div><div class="hstat-lbl">פתוחים</div></div><div style="width:1px;height:28px;background:var(--border)"></div><div class="hstat"><div class="hstat-val" style="color:var(--red)">${fmt(debt)}</div><div class="hstat-lbl">חוב</div></div>`;
+}
+renderProjects();renderHeaderStats();
+window.addEventListener('load',()=>{setTimeout(()=>{const s=document.getElementById('splash');if(!s)return;s.classList.add('hide');setTimeout(()=>s.remove(),600);},900);});
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone=window.navigator.standalone;
+if(isIOS&&!isStandalone&&!localStorage.getItem('pwa_tip_shown')){setTimeout(()=>{const tip=document.createElement('div');tip.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid #3b82f6;border-radius:16px;padding:14px 20px;font-size:13px;color:#e2e8f0;z-index:9000;width:290px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.6);direction:rtl;';tip.innerHTML=`<div style="font-size:22px;margin-bottom:6px">📲</div><strong>התקן כאפליקציה!</strong><br><span style="color:#94a3b8;font-size:12px;line-height:1.8">לחץ <strong style="color:#3b82f6">שיתוף ⬆️</strong><br>ואז <strong style="color:#3b82f6">"הוסף למסך הבית"</strong></span><br><button onclick="this.parentElement.remove();localStorage.setItem('pwa_tip_shown','1')" style="margin-top:10px;padding:8px 20px;border-radius:9px;border:1px solid #3b82f6;background:transparent;color:#3b82f6;font-family:Heebo,sans-serif;font-weight:700;cursor:pointer;font-size:13px;">הבנתי ✓</button>`;document.body.appendChild(tip);},2500);}
+</script>
+</body>
+</html>
